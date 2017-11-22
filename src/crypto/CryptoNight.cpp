@@ -101,16 +101,16 @@ bool CryptoNight::hash(const Job &job, JobResult &result, cryptonight_ctx *ctx)
 }
 
 
-bool CryptoNight::init(int algo, int variant)
+bool CryptoNight::init(uint8_t algo, uint8_t variant)
 {
     if (variant < 1 || variant > 4) {
         return false;
     }
 
 #   ifndef XMRIG_NO_AEON
-    const int index = algo == Options::ALGO_CRYPTONIGHT_LITE ? (variant + 3) : (variant - 1);
+    const uint8_t index = algo == Options::ALGO_CRYPTONIGHT_LITE ? (variant + 3) : (variant - 1);
 #   else
-    const int index = variant - 1;
+    const uint8_t index = variant - 1;
 #   endif
 
     cryptonight_hash_ctx = cryptonight_variations[index];
@@ -125,7 +125,7 @@ void CryptoNight::hash(const uint8_t *input, size_t size, uint8_t *output, crypt
 }
 
 
-bool CryptoNight::selfTest(int algo) {
+bool CryptoNight::selfTest(uint8_t algo) {
     if (cryptonight_hash_ctx == nullptr) {
         return false;
     }

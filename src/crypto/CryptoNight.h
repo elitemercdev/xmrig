@@ -51,11 +51,11 @@ class CryptoNight
 {
 public:
     static bool hash(const Job &job, JobResult &result, cryptonight_ctx *ctx);
-    static bool init(int algo, int variant);
+    static bool init(uint8_t algo, uint8_t variant);
     static void hash(const uint8_t *input, size_t size, uint8_t *output, cryptonight_ctx *ctx);
 
 private:
-    static bool selfTest(int algo);
+    static bool selfTest(uint8_t algo);
 };
 
 #endif /* __CRYPTONIGHT_H__ */

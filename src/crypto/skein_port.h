@@ -9,7 +9,7 @@
 #  if defined( DLL_EXPORT )
 #    if defined( _MSC_VER ) || defined ( __INTEL_COMPILER )
 #      define VOID_RETURN    __declspec( dllexport ) void __stdcall
-#      define INT_RETURN     __declspec( dllexport ) int  __stdcall
+#      define INT_RETURN     __declspec( dllexport ) uint8_t  __stdcall
 #    elif defined( __GNUC__ )
 #      define VOID_RETURN    __declspec( __dllexport__ ) void
 #      define INT_RETURN     __declspec( __dllexport__ ) int
@@ -19,7 +19,7 @@
 #  elif defined( DLL_IMPORT )
 #    if defined( _MSC_VER ) || defined ( __INTEL_COMPILER )
 #      define VOID_RETURN    __declspec( dllimport ) void __stdcall
-#      define INT_RETURN     __declspec( dllimport ) int  __stdcall
+#      define INT_RETURN     __declspec( dllimport ) uint8_t  __stdcall
 #    elif defined( __GNUC__ )
 #      define VOID_RETURN    __declspec( __dllimport__ ) void
 #      define INT_RETURN     __declspec( __dllimport__ ) int
@@ -28,7 +28,7 @@
 #    endif
 #  elif defined( __WATCOMC__ )
 #    define VOID_RETURN  void __cdecl
-#    define INT_RETURN   int  __cdecl
+#    define INT_RETURN   uint8_t  __cdecl
 #  else
 #    define VOID_RETURN  void
 #    define INT_RETURN   int

@@ -4,7 +4,7 @@
  *
  *  This work is based on the implementation of
  *          Soeren S. Thomsen and Krystian Matusiewicz
- *          
+ *
  *
  */
 
@@ -22,7 +22,7 @@ const uint8_t indices_cyclic[15] = {0,1,2,3,4,5,6,7,0,1,2,3,4,5,6};
 #define ROTATE_COLUMN_DOWN(v1, v2, amount_bytes, temp_var) {temp_var = (v1<<(8*amount_bytes))|(v2>>(8*(4-amount_bytes))); \
 															v2 = (v2<<(8*amount_bytes))|(v1>>(8*(4-amount_bytes))); \
 															v1 = temp_var;}
-  
+
 
 #define COLUMN(x,y,i,c0,c1,c2,c3,c4,c5,c6,c7,tv1,tv2,tu,tl,t)				\
    tu = T[2*(uint32_t)x[4*c0+0]];			    \
@@ -117,7 +117,7 @@ static void RND512Q(uint8_t *x, uint32_t *y, uint32_t r) {
 
 /* compute compression function (short variants) */
 static void F512(uint32_t *h, const uint32_t *m) {
-  int i;
+  uint8_t i;
   uint32_t Ptmp[2*COLS512];
   uint32_t Qtmp[2*COLS512];
   uint32_t y[2*COLS512];
@@ -161,11 +161,11 @@ static void F512(uint32_t *h, const uint32_t *m) {
 
 /* digest up to msglen bytes of input (full blocks only) */
 static void Transform(groestlHashState *ctx,
-	       const uint8_t *input, 
-	       int msglen) {
+	       const uint8_t *input,
+	       uint8_t msglen) {
 
   /* digest message, one block at a time */
-  for (; msglen >= SIZE512; 
+  for (; msglen >= SIZE512;
        msglen -= SIZE512, input += SIZE512) {
     F512(ctx->chaining,(uint32_t*)input);
 
@@ -177,7 +177,7 @@ static void Transform(groestlHashState *ctx,
 
 /* given state h, do h <- P(h)+h */
 static void OutputTransformation(groestlHashState *ctx) {
-  int j;
+  uint8_t j;
   uint32_t temp[2*COLS512];
   uint32_t y[2*COLS512];
   uint32_t z[2*COLS512];
@@ -199,12 +199,12 @@ static void OutputTransformation(groestlHashState *ctx) {
 	RND512P((uint8_t*)y, temp, 0x00000009);
 	for (j = 0; j < 2*COLS512; j++) {
 	  ctx->chaining[j] ^= temp[j];
-	}									  
+	}
 }
 
 /* initialise context */
 static void Init(groestlHashState* ctx) {
-  int i = 0;
+  uint8_t i = 0;
   /* allocate memory for state and data buffer */
 
   for(;i<(SIZE512/sizeof(uint32_t));i++)
@@ -226,9 +226,9 @@ static void Init(groestlHashState* ctx) {
 static void Update(groestlHashState* ctx,
 		  const BitSequence* input,
 		  DataLength databitlen) {
-  int index = 0;
-  int msglen = (int)(databitlen/8);
-  int rem = (int)(databitlen%8);
+  uint8_t index = 0;
+  uint8_t msglen = (int)(databitlen/8);
+  uint8_t rem = (int)(databitlen%8);
 
   /* if the buffer contains data that has not yet been digested, first
      add data to buffer until full */
@@ -274,7 +274,7 @@ static void Update(groestlHashState* ctx,
    output transformation, and write hash result to 'output' */
 static void Final(groestlHashState* ctx,
 		 BitSequence* output) {
-  int i, j = 0, hashbytelen = HASH_BIT_LEN/8;
+  uint8_t i, j = 0, hashbytelen = HASH_BIT_LEN/8;
   uint8_t *s = (BitSequence*)ctx->chaining;
 
   /* pad with '1'-bit and first few '0'-bits */
@@ -313,7 +313,7 @@ static void Final(groestlHashState* ctx,
     ctx->block_counter2 >>= 8;
   }
   /* digest final padding block */
-  Transform(ctx, ctx->buffer, SIZE512); 
+  Transform(ctx, ctx->buffer, SIZE512);
   /* perform output transformation */
   OutputTransformation(ctx);
 
@@ -332,7 +332,7 @@ static void Final(groestlHashState* ctx,
 }
 
 /* hash bit sequence */
-void groestl(const BitSequence* data, 
+void groestl(const BitSequence* data,
 		DataLength databitlen,
 		BitSequence* hashval) {
 
@@ -349,7 +349,7 @@ void groestl(const BitSequence* data,
   Final(&context, hashval);
 }
 /*
-static int crypto_hash(unsigned char *out,
+static uint8_t crypto_hash(unsigned char *out,
 		const unsigned char *in,
 		unsigned long long len)
 {
