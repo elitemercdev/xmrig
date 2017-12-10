@@ -67,7 +67,7 @@ public:
             return false;
         }
 
-        memcpy(m_data, id, size - sizeFix);
+        memmove(m_data, id, size - sizeFix);
         return true;
     }
 

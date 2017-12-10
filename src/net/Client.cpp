@@ -242,7 +242,7 @@ bool Client::parseLogin(const rapidjson::Value &result, int *code)
     }
 
     memset(m_rpcId, 0, sizeof(m_rpcId));
-    memcpy(m_rpcId, id, strlen(id));
+    memmove(m_rpcId, id, strlen(id));
 
     return parseJob(result["job"], code);
 }
@@ -358,7 +358,7 @@ void Client::login()
         return;
     }
 
-    memcpy(m_sendBuf, buffer.GetString(), size);
+    memmove(m_sendBuf, buffer.GetString(), size);
     m_sendBuf[size]     = '\n';
     m_sendBuf[size + 1] = '\0';
 
@@ -613,7 +613,7 @@ void Client::onRead(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf)
         return;
     }
 
-    memcpy(buf->base, start, remaining);
+    memmove(buf->base, start, remaining);
     client->m_recvBufPos = remaining;
 }
 

@@ -168,7 +168,7 @@ static void decode_intel_oldstyle_cache_info(struct cpu_raw_data_t* raw, struct 
 			x >>= 8;
 		}
 	}
-	
+
 	check_case(f[0x06], L1I,      8,  4,  32, data);
 	check_case(f[0x08], L1I,     16,  4,  32, data);
 	check_case(f[0x0A], L1D,      8,  2,  32, data);
@@ -208,7 +208,7 @@ static void decode_intel_oldstyle_cache_info(struct cpu_raw_data_t* raw, struct 
 	check_case(f[0x71], L1I,     16,  8,  -1, data);
 	check_case(f[0x72], L1I,     32,  8,  -1, data);
 	check_case(f[0x73], L1I,     64,  8,  -1, data);
-	
+
 	check_case(f[0x78],  L2,   1024,  4,  64, data);
 	check_case(f[0x79],  L2,    128,  8,  64, data);
 	check_case(f[0x7A],  L2,    256,  8,  64, data);
@@ -222,7 +222,7 @@ static void decode_intel_oldstyle_cache_info(struct cpu_raw_data_t* raw, struct 
 	check_case(f[0x85],  L2,   2048,  8,  32, data);
 	check_case(f[0x86],  L2,    512,  4,  64, data);
 	check_case(f[0x87],  L2,   1024,  8,  64, data);
-	
+
 	if (f[0x49]) {
 		/* This flag is overloaded with two meanings. On Xeon MP
 		 * (family 0xf, model 0x6) this means L3 cache. On all other
@@ -315,11 +315,11 @@ static void decode_intel_number_of_cores(struct cpu_raw_data_t* raw,
                                          struct cpu_id_t* data)
 {
 	int logical_cpus = -1, num_cores = -1;
-	
+
 	if (raw->basic_cpuid[0][0] >= 11) {
 		if (decode_intel_extended_topology(raw, data)) return;
 	}
-	
+
 	if (raw->basic_cpuid[0][0] >= 1) {
 		logical_cpus = (raw->basic_cpuid[1][1] >> 16) & 0xff;
 		if (raw->basic_cpuid[0][0] >= 4) {
@@ -361,7 +361,7 @@ static intel_code_and_bits_t get_brand_code_and_bits(struct cpu_id_t* data)
 		{ PINEVIEW, "CPU [ND][45]## " },
 		{ CEDARVIEW, "CPU [ND]#### " },
 	};
-	
+
 	const struct { uint64_t bit; const char* search; } bit_matchtable[] = {
 		{ XEON_, "Xeon" },
 		{ _MP_, " MP" },
@@ -370,12 +370,12 @@ static intel_code_and_bits_t get_brand_code_and_bits(struct cpu_id_t* data)
 		{ CELERON_, "Celeron" },
 		{ PENTIUM_, "Pentium" },
 	};
-	
+
 	for (i = 0; i < COUNT_OF(bit_matchtable); i++) {
 		if (match_pattern(bs, bit_matchtable[i].search))
 			bits |= bit_matchtable[i].bit;
 	}
-	
+
 	if ((i = match_pattern(bs, "Core(TM) [im][357]")) != 0) {
 		bits |= CORE_;
 		i--;
@@ -437,7 +437,7 @@ static intel_code_and_bits_t get_brand_code_and_bits(struct cpu_id_t* data)
 				code = MORE_THAN_QUADCORE; break;
 		}
 	}
-	
+
 	if (code == CORE_DUO && (bits & MOBILE_) && data->model != 14) {
 		if (data->ext_model < 23) {
 			code = MEROM;
@@ -459,10 +459,10 @@ static void decode_intel_sgx_features(const struct cpu_raw_data_t* raw, struct c
 {
 	struct cpu_epc_t epc;
 	int i;
-	
+
 	if (raw->basic_cpuid[0][0] < 0x12) return; // no 12h leaf
 	if (raw->basic_cpuid[0x12][0] == 0) return; // no sub-leafs available, probably it's disabled by BIOS
-	
+
 	// decode sub-leaf 0:
 	if (raw->basic_cpuid[0x12][0] & 1) data->sgx.flags[INTEL_SGX1] = 1;
 	if (raw->basic_cpuid[0x12][0] & 2) data->sgx.flags[INTEL_SGX2] = 1;
@@ -471,11 +471,11 @@ static void decode_intel_sgx_features(const struct cpu_raw_data_t* raw, struct c
 	data->sgx.misc_select = raw->basic_cpuid[0x12][1];
 	data->sgx.max_enclave_32bit = (raw->basic_cpuid[0x12][3]     ) & 0xff;
 	data->sgx.max_enclave_64bit = (raw->basic_cpuid[0x12][3] >> 8) & 0xff;
-	
+
 	// decode sub-leaf 1:
 	data->sgx.secs_attributes = raw->intel_fn12h[1][0] | (((uint64_t) raw->intel_fn12h[1][1]) << 32);
 	data->sgx.secs_xfrm       = raw->intel_fn12h[1][2] | (((uint64_t) raw->intel_fn12h[1][3]) << 32);
-	
+
 	// decode higher-order subleafs, whenever present:
 	data->sgx.num_epc_sections = -1;
 	for (i = 0; i < 1000000; i++) {
@@ -496,7 +496,7 @@ struct cpu_epc_t cpuid_get_epc(int index, const struct cpu_raw_data_t* raw)
 	struct cpu_epc_t retval = {0, 0};
 	if (raw && index < MAX_INTELFN12H_LEVEL - 2) {
 		// this was queried already, use the data:
-		memcpy(regs, raw->intel_fn12h[2 + index], sizeof(regs));
+		memmove(regs, raw->intel_fn12h[2 + index], sizeof(regs));
 	} else {
 		// query this ourselves:
 		regs[0] = 0x12;
@@ -504,7 +504,7 @@ struct cpu_epc_t cpuid_get_epc(int index, const struct cpu_raw_data_t* raw)
 		regs[1] = regs[3] = 0;
 		cpu_exec_cpuid_ext(regs);
 	}
-	
+
 	// decode values:
 	if ((regs[0] & 0xf) == 0x1) {
 		retval.start_addr |= (regs[0] & 0xfffff000); // bits [12, 32) -> bits [12, 32)
@@ -529,10 +529,10 @@ int cpuid_identify_intel(struct cpu_raw_data_t* raw, struct cpu_id_t* data, stru
 	decode_intel_number_of_cores(raw, data);
 
 	brand = get_brand_code_and_bits(data);
-	
+
 	internal->code.intel = brand.code;
 	internal->bits = brand.bits;
-	
+
 	if (data->flags[CPU_FEATURE_SGX]) {
 		// if SGX is indicated by the CPU, verify its presence:
 		decode_intel_sgx_features(raw, data);

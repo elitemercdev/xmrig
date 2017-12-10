@@ -237,10 +237,10 @@ static HashReturn Init(hashState *state, int hashbitlen)
       /*load the intital hash value into state*/
       switch (hashbitlen)
       {
-            case 224: memcpy(state->x,JH224_H0,128); break;
-            case 256: memcpy(state->x,JH256_H0,128); break;
-            case 384: memcpy(state->x,JH384_H0,128); break;
-            case 512: memcpy(state->x,JH512_H0,128); break;
+            case 224: memmove(state->x,JH224_H0,128); break;
+            case 256: memmove(state->x,JH256_H0,128); break;
+            case 384: memmove(state->x,JH384_H0,128); break;
+            case 512: memmove(state->x,JH512_H0,128); break;
       }
 
       return(SUCCESS);
@@ -261,16 +261,16 @@ static HashReturn Update(hashState *state, const BitSequence *data, DataLength d
       /*There is data in the buffer, but the incoming data is insufficient for a full block*/
       if ( (state->datasize_in_buffer > 0 ) && (( state->datasize_in_buffer + databitlen) < 512)  ) {
             if ( (databitlen & 7) == 0 ) {
-                 memcpy(state->buffer + (state->datasize_in_buffer >> 3), data, 64-(state->datasize_in_buffer >> 3)) ;
+                 memmove(state->buffer + (state->datasize_in_buffer >> 3), data, 64-(state->datasize_in_buffer >> 3)) ;
 		    }
-            else memcpy(state->buffer + (state->datasize_in_buffer >> 3), data, 64-(state->datasize_in_buffer >> 3)+1) ;
+            else memmove(state->buffer + (state->datasize_in_buffer >> 3), data, 64-(state->datasize_in_buffer >> 3)+1) ;
             state->datasize_in_buffer += databitlen;
             databitlen = 0;
       }
 
       /*There is data in the buffer, and the incoming data is sufficient for a full block*/
       if ( (state->datasize_in_buffer > 0 ) && (( state->datasize_in_buffer + databitlen) >= 512)  ) {
-	        memcpy( state->buffer + (state->datasize_in_buffer >> 3), data, 64-(state->datasize_in_buffer >> 3) ) ;
+	        memmove( state->buffer + (state->datasize_in_buffer >> 3), data, 64-(state->datasize_in_buffer >> 3) ) ;
 	        index = 64-(state->datasize_in_buffer >> 3);
 	        databitlen = databitlen - (512 - state->datasize_in_buffer);
 	        F8(state);
@@ -279,16 +279,16 @@ static HashReturn Update(hashState *state, const BitSequence *data, DataLength d
 
       /*hash the remaining full message blocks*/
       for ( ; databitlen >= 512; index = index+64, databitlen = databitlen - 512) {
-            memcpy(state->buffer, data+index, 64);
+            memmove(state->buffer, data+index, 64);
             F8(state);
       }
 
       /*store the partial block into buffer, assume that -- if part of the last byte is not part of the message, then that part consists of 0 bits*/
       if ( databitlen > 0) {
             if ((databitlen & 7) == 0)
-                  memcpy(state->buffer, data+index, (databitlen & 0x1ff) >> 3);
+                  memmove(state->buffer, data+index, (databitlen & 0x1ff) >> 3);
             else
-                  memcpy(state->buffer, data+index, ((databitlen & 0x1ff) >> 3)+1);
+                  memmove(state->buffer, data+index, ((databitlen & 0x1ff) >> 3)+1);
             state->datasize_in_buffer = databitlen;
       }
 
@@ -339,10 +339,10 @@ static HashReturn Final(hashState *state, BitSequence *hashval)
 
       /*truncating the final hash value to generate the message digest*/
       switch(state->hashbitlen) {
-            case 224: memcpy(hashval,(unsigned char*)state->x+64+36,28);  break;
-            case 256: memcpy(hashval,(unsigned char*)state->x+64+32,32);  break;
-            case 384: memcpy(hashval,(unsigned char*)state->x+64+16,48);  break;
-            case 512: memcpy(hashval,(unsigned char*)state->x+64,64);     break;
+            case 224: memmove(hashval,(unsigned char*)state->x+64+36,28);  break;
+            case 256: memmove(hashval,(unsigned char*)state->x+64+32,32);  break;
+            case 384: memmove(hashval,(unsigned char*)state->x+64+16,48);  break;
+            case 512: memmove(hashval,(unsigned char*)state->x+64,64);     break;
       }
 
       return(SUCCESS);

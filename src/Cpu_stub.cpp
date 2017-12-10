@@ -75,7 +75,7 @@ static inline void cpu_brand_string(char* s) {
     if (cpu_info[EAX_Reg] >= 4) {
         for (int i = 0; i < 4; i++) {
             cpuid(0x80000002 + i, cpu_info);
-            memcpy(s, cpu_info, sizeof(cpu_info));
+            memmove(s, cpu_info, sizeof(cpu_info));
             s += 16;
         }
     }

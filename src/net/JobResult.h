@@ -42,7 +42,7 @@ public:
         diff(diff),
         nonce(nonce)
     {
-        memcpy(this->result, result, sizeof(this->result));
+        memmove(this->result, result, sizeof(this->result));
     }
 
 

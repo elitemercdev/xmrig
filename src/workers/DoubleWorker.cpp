@@ -129,8 +129,8 @@ void DoubleWorker::consumeJob()
     }
 
     m_state->job = std::move(job);
-    memcpy(m_state->blob,                       m_state->job.blob(), m_state->job.size());
-    memcpy(m_state->blob + m_state->job.size(), m_state->job.blob(), m_state->job.size());
+    memmove(m_state->blob,                       m_state->job.blob(), m_state->job.size());
+    memmove(m_state->blob + m_state->job.size(), m_state->job.blob(), m_state->job.size());
 
     if (m_state->job.isNicehash()) {
         m_state->nonce1 = (*Job::nonce(m_state->blob)                       & 0xff000000U) + (0xffffffU / (m_threads * 2) * m_id);

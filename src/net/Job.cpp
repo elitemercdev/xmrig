@@ -97,7 +97,7 @@ bool Job::setBlob(const char *blob)
 
 #   ifdef XMRIG_PROXY_PROJECT
     memset(m_rawBlob, 0, sizeof(m_rawBlob));
-    memcpy(m_rawBlob, blob, m_size * 2);
+    memmove(m_rawBlob, blob, m_size * 2);
 #   endif
 
     return true;
@@ -115,7 +115,7 @@ bool Job::setTarget(const char *target)
     if (len <= 8) {
         uint32_t tmp = 0;
         char str[8];
-        memcpy(str, target, len);
+        memmove(str, target, len);
 
         if (!fromHex(str, 8, reinterpret_cast<unsigned char*>(&tmp)) || tmp == 0) {
             return false;
@@ -126,7 +126,7 @@ bool Job::setTarget(const char *target)
     else if (len <= 16) {
         m_target = 0;
         char str[16];
-        memcpy(str, target, len);
+        memmove(str, target, len);
 
         if (!fromHex(str, 16, reinterpret_cast<unsigned char*>(&m_target)) || m_target == 0) {
             return false;
@@ -138,7 +138,7 @@ bool Job::setTarget(const char *target)
 
 #   ifdef XMRIG_PROXY_PROJECT
     memset(m_rawTarget, 0, sizeof(m_rawTarget));
-    memcpy(m_rawTarget, target, len);
+    memmove(m_rawTarget, target, len);
 #   endif
 
     m_diff = toDiff(m_target);

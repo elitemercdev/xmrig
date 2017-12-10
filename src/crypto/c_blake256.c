@@ -129,7 +129,7 @@ void blake256_update(state *S, const uint8_t *data, uint64_t datalen) {
     int fill = 64 - left;
 
     if (left && (((datalen >> 3) & 0x3F) >= (unsigned) fill)) {
-        memcpy((void *) (S->buf + left), (void *) data, fill);
+        memmove((void *) (S->buf + left), (void *) data, fill);
         S->t[0] += 512;
         if (S->t[0] == 0) S->t[1]++;
         blake256_compress(S, S->buf);
@@ -147,7 +147,7 @@ void blake256_update(state *S, const uint8_t *data, uint64_t datalen) {
     }
 
     if (datalen > 0) {
-        memcpy((void *) (S->buf + left), (void *) data, datalen >> 3);
+        memmove((void *) (S->buf + left), (void *) data, datalen >> 3);
         S->buflen = (left << 3) + (int) datalen;
     } else {
         S->buflen = 0;

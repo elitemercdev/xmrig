@@ -89,7 +89,7 @@ static int get_total_cpus(void)
 #if defined linux || defined __linux__ || defined __sun
 #include <sys/sysinfo.h>
 #include <unistd.h>
- 
+
 static int get_total_cpus(void)
 {
 	return sysconf(_SC_NPROCESSORS_ONLN);
@@ -238,9 +238,9 @@ static cpu_vendor_t cpuid_vendor_identify(const uint32_t *raw_vendor, char *vend
         { VENDOR_NSC		, "Geode by NSC" },
     };
 
-    memcpy(vendor_str + 0, &raw_vendor[1], 4);
-    memcpy(vendor_str + 4, &raw_vendor[3], 4);
-    memcpy(vendor_str + 8, &raw_vendor[2], 4);
+    memmove(vendor_str + 0, &raw_vendor[1], 4);
+    memmove(vendor_str + 4, &raw_vendor[3], 4);
+    memmove(vendor_str + 8, &raw_vendor[2], 4);
     vendor_str[12] = 0;
 
     /* Determine vendor: */
@@ -274,12 +274,12 @@ static int cpuid_basic_identify(struct cpu_raw_data_t* raw, struct cpu_id_t* dat
 		data->ext_model = data->model + (xmodel << 4);
 	}
 	ext = raw->ext_cpuid[0][0] - 0x8000000;
-	
+
 	/* obtain the brand string, if present: */
 	if (ext >= 4) {
 		for (i = 0; i < 3; i++)
 			for (j = 0; j < 4; j++)
-				memcpy(brandstr + i * 16 + j * 4,
+				memmove(brandstr + i * 16 + j * 4,
 				       &raw->ext_cpuid[2 + i][j], 4);
 		brandstr[48] = 0;
 		i = 0;
