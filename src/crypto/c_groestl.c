@@ -339,7 +339,7 @@ void groestl(const BitSequence* data,
   groestlHashState context;
 
   /* initialise */
-    Init(&context);
+  Init(&context);
 
 
   /* process message */

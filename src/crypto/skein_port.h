@@ -12,7 +12,7 @@
 #      define INT_RETURN     __declspec( dllexport ) uint8_t  __stdcall
 #    elif defined( __GNUC__ )
 #      define VOID_RETURN    __declspec( __dllexport__ ) void
-#      define INT_RETURN     __declspec( __dllexport__ ) int
+#      define INT_RETURN     __declspec( __dllexport__ ) uint8_t
 #    else
 #      error Use of the DLL is only available on the Microsoft, Intel and GCC compilers
 #    endif
@@ -22,7 +22,7 @@
 #      define INT_RETURN     __declspec( dllimport ) uint8_t  __stdcall
 #    elif defined( __GNUC__ )
 #      define VOID_RETURN    __declspec( __dllimport__ ) void
-#      define INT_RETURN     __declspec( __dllimport__ ) int
+#      define INT_RETURN     __declspec( __dllimport__ ) uint8_t
 #    else
 #      error Use of the DLL is only available on the Microsoft, Intel and GCC compilers
 #    endif
@@ -31,7 +31,7 @@
 #    define INT_RETURN   uint8_t  __cdecl
 #  else
 #    define VOID_RETURN  void
-#    define INT_RETURN   int
+#    define INT_RETURN   uint8_t
 #  endif
 #endif
 
@@ -56,7 +56,7 @@
 #define dec_bufr_type(size,bsize,x) typedef ui_type(size) x[bsize / (size >> 3)]
 #define ptr_cast(x,size)            ((ui_type(size)*)(x))
 
-typedef unsigned int    uint_t;             /* native unsigned integer */
+typedef unsigned uint8_t    uint_t;             /* native unsigned integer */
 typedef uint8_t         u08b_t;             /*  8-bit unsigned integer */
 typedef uint64_t        u64b_t;             /* 64-bit unsigned integer */
 
