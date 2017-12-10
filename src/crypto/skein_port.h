@@ -56,7 +56,7 @@
 #define dec_bufr_type(size,bsize,x) typedef ui_type(size) x[bsize / (size >> 3)]
 #define ptr_cast(x,size)            ((ui_type(size)*)(x))
 
-typedef unsigned uint8_t    uint_t;             /* native unsigned integer */
+typedef unsigned int    uint_t;             /* native unsigned integer */
 typedef uint8_t         u08b_t;             /*  8-bit unsigned integer */
 typedef uint64_t        u64b_t;             /* 64-bit unsigned integer */
 
